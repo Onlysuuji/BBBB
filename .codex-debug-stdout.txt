@@ -1,11 +1,11 @@
 変更内容:
-- `config/untitled-item-swap.properties` から `itemA` / `itemB` / `allowInventorySwap` を読み込む基盤を追加
-- インベントリ/ホットバー内のA/B検出と、`G`キーによるA/B切り替えを追加
-- 対象がない、画面操作中、満杯かつ安全な退避先がない場合は何もしない安全動作にした
+- `docs/enchantment-effect-retention.md` を追加
+- Minecraft 1.21.1 / Fabric Loader 0.19.2+ / Fabric API 0.116.11+1.21.1 を対象に、A/B切り替え時の効果保持条件、0〜1 server tick の持続時間、対象エンチャント種別、再現手順、実装時のイベント候補を仕様化
 
 確認結果:
-- 簡易 `javac` 確認は終了コード0。ソース診断エラーなし
-- Gradle実行は環境都合で未完了: Gradle 8 はJava 25非対応、Gradle 9 は `fabric-loom:1.8-SNAPSHOT` を解決不可
+- `Select-String` で追加ドキュメントの行末空白なしを確認
+- `git diff --check` は既存の `.codex-debug-stderr.txt` の行末空白で失敗。追加ドキュメント起因の指摘はなし
 
 残課題:
-- Minecraft実行環境でのホットバー位置違い、対象なし、インベントリ満杯時の実機確認が未実施。
+- シングルプレイ検証ワールドでの実機ログ確認は未実施
+- マルチプレイではTPS、遅延、サーバーMod/不正検知で挙動が変わるため別途検証が必要
