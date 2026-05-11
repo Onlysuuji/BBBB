@@ -81,6 +81,26 @@ These are reference points for later implementation, not implemented in this sub
 - `LivingEntity` equipment-change processing and `onEquipStack`: server-side point where old item attribute modifiers are removed and new ones are applied.
 - `EnchantmentHelper`: source of current-action enchantment evaluation; effects queried from the current item stack should not be modeled as retained.
 
+## Efficiency-Only Control Model
+
+If later implementation deliberately targets only `minecraft:efficiency`, the loop can be based on the player's `minecraft:player.mining_efficiency` attribute instead of blindly switching on a fixed interval.
+
+Candidate control flow:
+
+1. Select item A, which must be an Efficiency-enchanted mining item in the main hand.
+2. Wait until the local player attribute value reflects the Efficiency modifier.
+3. Immediately switch to item B and perform or continue the target action.
+4. Keep checking `minecraft:player.mining_efficiency` while item B is selected.
+5. When the attribute returns to the baseline value, switch back to item A until the modifier appears again.
+6. Repeat only while the user input is still active and both item stacks are still in the expected slots.
+
+Important limits:
+
+- This only applies to attribute-backed behavior such as Efficiency's mining-efficiency modifier.
+- This does not make Fortune, Silk Touch, Sharpness, Looting, or projectile effects transferable, because those effects are evaluated from the current action's `ItemStack`.
+- Client-side attribute observation is only a timing hint. The server remains authoritative, so multiplayer latency, TPS drops, inventory correction, or anti-cheat logic can still make the retained window disappear.
+- The loop should fail closed when the attribute is missing, the selected slot is uncertain, a screen is open, the item changes, or the user releases the input.
+
 ## Multiplayer Risk
 
 This behavior is timing-dependent and server-authoritative. Multiplayer servers can change the practical window through TPS, latency, plugin behavior, or anti-cheat inventory checks. Any later implementation must default to conservative timing, fail closed when slot state is uncertain, and warn users to follow server rules.
