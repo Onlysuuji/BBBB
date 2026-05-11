@@ -26,6 +26,28 @@ public class UntitledClient implements ClientModInitializer {
             }
 
             effectLoopController.tick(client);
+import org.ahaha.untitled.client.itemswap.ItemSwapConfig;
+import org.ahaha.untitled.client.itemswap.ItemSwapController;
+import org.lwjgl.glfw.GLFW;
+
+public class UntitledClient implements ClientModInitializer {
+    private static final String CATEGORY = "key.category.untitled";
+    private static final String SWAP_KEY = "key.untitled.swap_item_a_b";
+
+    @Override
+    public void onInitializeClient() {
+        ItemSwapController controller = new ItemSwapController(ItemSwapConfig.load());
+        KeyBinding swapKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                SWAP_KEY,
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_G,
+                CATEGORY
+        ));
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (swapKey.wasPressed()) {
+                controller.toggle(client);
+            }
         });
     }
 }
