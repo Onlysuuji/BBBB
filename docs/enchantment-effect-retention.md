@@ -81,25 +81,25 @@ These are reference points for later implementation, not implemented in this sub
 - `LivingEntity` equipment-change processing and `onEquipStack`: server-side point where old item attribute modifiers are removed and new ones are applied.
 - `EnchantmentHelper`: source of current-action enchantment evaluation; effects queried from the current item stack should not be modeled as retained.
 
-## Efficiency-Only Control Model
+## Efficiency 限定の制御モデル
 
-If later implementation deliberately targets only `minecraft:efficiency`, the loop can be based on the player's `minecraft:player.mining_efficiency` attribute instead of blindly switching on a fixed interval.
+将来の実装で `minecraft:efficiency` だけを対象にするなら、固定間隔でやみくもに切り替えるのではなく、プレイヤーの `minecraft:player.mining_efficiency` attribute を見てループを制御できる。
 
-Candidate control flow:
+制御フロー案:
 
-1. Select item A, which must be an Efficiency-enchanted mining item in the main hand.
-2. Wait until the local player attribute value reflects the Efficiency modifier.
-3. Immediately switch to item B and perform or continue the target action.
-4. Keep checking `minecraft:player.mining_efficiency` while item B is selected.
-5. When the attribute returns to the baseline value, switch back to item A until the modifier appears again.
-6. Repeat only while the user input is still active and both item stacks are still in the expected slots.
+1. item A を選択する。item A は Efficiency 付きの採掘アイテムで、メインハンドに持つ必要がある。
+2. ローカルプレイヤーの attribute 値に Efficiency の modifier が反映されるまで待つ。
+3. 反映を確認したら、すぐ item B に切り替えて対象アクションを実行または継続する。
+4. item B を選択している間も `minecraft:player.mining_efficiency` を監視する。
+5. attribute が基準値に戻ったら、modifier が再び反映されるまで item A に戻す。
+6. ユーザー入力が続いていて、両方のアイテムが想定スロットにある場合だけ繰り返す。
 
-Important limits:
+重要な制限:
 
-- This only applies to attribute-backed behavior such as Efficiency's mining-efficiency modifier.
-- This does not make Fortune, Silk Touch, Sharpness, Looting, or projectile effects transferable, because those effects are evaluated from the current action's `ItemStack`.
-- Client-side attribute observation is only a timing hint. The server remains authoritative, so multiplayer latency, TPS drops, inventory correction, or anti-cheat logic can still make the retained window disappear.
-- The loop should fail closed when the attribute is missing, the selected slot is uncertain, a screen is open, the item changes, or the user releases the input.
+- この方式が対象にできるのは、Efficiency の採掘効率 modifier のように attribute として見える効果だけ。
+- Fortune、Silk Touch、Sharpness、Looting、投射物系の効果を item B に移せるわけではない。これらは現在のアクションに使われた `ItemStack` から評価される。
+- クライアント側の attribute 監視は、あくまでタイミングの目安でしかない。最終的にはサーバーが正なので、マルチプレイの遅延、TPS 低下、インベントリ補正、アンチチート処理によって保持時間が消えることがある。
+- attribute が見つからない、選択スロットが不確実、画面を開いている、アイテムが変わった、ユーザーが入力を離した場合は、安全側に倒してループを止めるべき。
 
 ## Multiplayer Risk
 
