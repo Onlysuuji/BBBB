@@ -1,0 +1,53 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# Gradle wrapper は残す
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse / VS Code
+.classpath
+.project
+.settings/
+.vscode/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Minecraft / Fabric run files
+run/
+logs/
+crash-reports/
+saves/
+resourcepacks/
+shaderpacks/
+screenshots/
+options.txt
+optionsof.txt
+servers.dat
+usercache.json
+usernamecache.json
+
+# Loom / generated
+remappedSrc/
+generated/
+src/main/generated/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
